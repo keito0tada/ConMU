@@ -323,6 +323,8 @@ def split_train_to_forget_retain(
     whole_dataset = marked_loader.dataset
     if args.dataset == "svhn":
         label = whole_dataset.labels
+    elif args.dataset == "pathmnist":
+        label = [y for (X, y) in whole_dataset]
     else:
         label = whole_dataset.targets
 
