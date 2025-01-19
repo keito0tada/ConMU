@@ -227,10 +227,10 @@ def setup_model_dataset(args):
         normalization = NormalizeByChannelMeanStd(
             mean=[0.5071, 0.4866, 0.4409], std=[0.2673, 0.2564, 0.2762]
         )
-        train_full_loader, val_loader, test_loader = cifar100_dataloaders_no_val(
+        train_full_loader, val_loader, test_loader = pathmnist_dataloaders_no_val(
             batch_size=args.batch_size, data_dir=args.data, num_workers=args.workers
         )
-        marked_loader, _, _ = cifar100_dataloaders_no_val(
+        marked_loader, _, _ = pathmnist_dataloaders_no_val(
             batch_size=args.batch_size, data_dir=args.data, num_workers=args.workers
         )
         if args.imagenet_arch:
