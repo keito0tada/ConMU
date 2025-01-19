@@ -8,8 +8,10 @@ import torch.utils.data
 
 import utils
 
-sys.path.append(('../'))
-sys.path.append(('../../'))
+sys.path.append(("../"))
+sys.path.append(("../../"))
+
+datasets = ["cifar10", "cifar100", "svhn", "pathmnist"]
 
 
 def data_init(args):
@@ -21,30 +23,48 @@ def data_init(args):
     else:
         device = torch.device("cpu")
 
-    if args.dataset == "cifar10" or args.dataset == "cifar100" or args.dataset == 'svhn':
+    if args.dataset in datasets:
 
-        model, incompetent_model, train_loader, _, test_loader, marked_loader = utils.setup_model_dataset(args)
+        model, incompetent_model, train_loader, _, test_loader, marked_loader = (
+            utils.setup_model_dataset(args)
+        )
 
-        forget_loader, retain_loader = utils.split_train_to_forget_retain(marked_loader=marked_loader,
-                                                                          forget_percentage=args.forget_percentage,
-                                                                          batch_size=args.batch_size)
+        forget_loader, retain_loader = utils.split_train_to_forget_retain(
+            marked_loader=marked_loader,
+            forget_percentage=args.forget_percentage,
+            batch_size=args.batch_size,
+        )
 
     else:
         raise Exception("Other datasets are not supported yet")
 
     incompetent_model = incompetent_model.to(device)
     criterion = nn.CrossEntropyLoss().to(device)
-    optimizer = torch.optim.SGD(incompetent_model.parameters(), lr=args.lr, momentum=args.momentum,
-                                weight_decay=args.weight_decay)
+    optimizer = torch.optim.SGD(
+        incompetent_model.parameters(),
+        lr=args.lr,
+        momentum=args.momentum,
+        weight_decay=args.weight_decay,
+    )
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
 
     # record the time for training
     start_time = time.time()
     # train incomepetent model using retain_loader for three epochs with the scheduler
     for epoch in range(args.incompetent_epoch):
-        loss, acc = utils.train_one_epoch(incompetent_model, retain_loader, criterion, optimizer, scheduler, device)
+        loss, acc = utils.train_one_epoch(
+            incompetent_model, retain_loader, criterion, optimizer, scheduler, device
+        )
         print(f"Epoch {epoch + 1}: Loss = {loss:.4f}, Accuracy = {acc:.2f}%")
     end_time = time.time()
     total_unlearn_time = end_time - start_time
 
-    return model, incompetent_model, train_loader, test_loader, forget_loader, retain_loader, total_unlearn_time
+    return (
+        model,
+        incompetent_model,
+        train_loader,
+        test_loader,
+        forget_loader,
+        retain_loader,
+        total_unlearn_time,
+    )

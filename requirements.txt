@@ -13,7 +13,7 @@ backcall==0.2.0
 blurhash==1.1.4
 boost==0.1
 cachetools==5.3.1
-cchardet==2.1.7
+# cchardet==2.1.7
 charset-normalizer==3.1.0
 cmake==3.26.4
 ctgan==0.7.4
@@ -119,3 +119,5 @@ wrapt==1.14.1
 xxhash==3.2.0
 yarl==1.9.2
 zipp==3.16.2
+
+medmnist
