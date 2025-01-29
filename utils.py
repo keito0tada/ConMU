@@ -124,6 +124,42 @@ def setup_seed(seed):
     random.seed(seed)
     torch.backends.cudnn.deterministic = True
 
+def medmnist_setup_model_dataset(data_flag, batch_size, rate, index, train_seed):
+    info = medmnist.INFO[data_flag]
+    # task = info["task"]
+    channels = info["n_channels"]
+    classes = len(info["label"])
+    # normalization = NormalizeByChannelMeanStd(
+    #     mean=[0.4914, 0.4822, 0.4465], std=[0.2470, 0.2435, 0.2616]
+    # )
+    train_full_loader, val_loader, test_loader, forget_loader, retain_loader = (
+        medmnist_dataloaders(data_flag, batch_size, rate=rate, index=index)
+    )
+
+    # if args.train_seed is None:
+    #     args.train_seed = args.seed
+    # setup_seed(args.train_seed)
+
+    # if args.imagenet_arch:
+    #     model = model_dict[args.arch](num_classes=classes, imagenet=True)
+    # else:
+    #     model = model_dict[args.arch](num_classes=classes)
+    model = model_dict["medmnist_resnet18"](in_channels=channels, num_classes=classes)
+    incompetent_model = copy.deepcopy(model)
+
+    # setup_seed(args.train_seed)
+    setup_seed(train_seed)
+
+    # model.normalize = normalization
+    return (
+        model,
+        incompetent_model,
+        train_full_loader,
+        val_loader,
+        test_loader,
+        forget_loader,
+        retain_loader,
+    )
 
 def setup_model_dataset(args):
     if args.dataset == "cifar10":

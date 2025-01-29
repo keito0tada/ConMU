@@ -2,8 +2,10 @@ from .ResNet import *
 from .ResNets import *
 from .VGG import *
 from .VGG_LTH import *
+from .MedMNIST_ResNet import *
 
 model_dict = {
+    'medmnist_resnet18': ResNet18,
     'resnet18': resnet18,
     'resnet34': resnet34,
     'resnet50': resnet50,
